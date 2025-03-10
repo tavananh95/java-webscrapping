@@ -6,5 +6,6 @@ Scrapper pour chercher des évènements en fonction du type d'évènement et de 
 
 ## Lancer JavaFx
 mvn clean
+
 mvn javafx:run -f pom.xml
 
