@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.MainScrapper"
+      spacing="20" style="-fx-padding: 20;">
+
+    <!-- Left Section: User Inputs -->
+    <VBox spacing="10">
+        <Label text="Villes:"/>
+        <ComboBox fx:id="comboVilles"/>
+
+        <Label text="Evènements:"/>
+        <ComboBox fx:id="comboEvents"/>
+
+        <Button text="Start Scraping" onAction="#handleScrape"/>
+    </VBox>
+
+    <!-- Right Section: Event List -->
+    <ListView fx:id="eventListView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+        <items>
+            <FXCollections fx:factory="observableArrayList"/>
+        </items>
+    </ListView>
+
+</HBox>

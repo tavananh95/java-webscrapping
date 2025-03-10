@@ -1,15 +1,13 @@
-package org.example;
+package org.example.test;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.Map;
 
-public class Main {
+public class ScrapTest {
     public static void main(String[] args) {
         try {
             String url = "https://www.francebillet.com/city/paris-369/theatre-188/";
