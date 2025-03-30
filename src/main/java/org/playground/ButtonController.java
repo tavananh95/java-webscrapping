@@ -1,4 +1,4 @@
-package org.example.test;
+package org.playground;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

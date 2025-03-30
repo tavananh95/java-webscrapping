@@ -1,4 +1,4 @@
-package org.example;
+package org.scrapper.fxmodels;
 
 public class EventItem {
     private final String eventName;

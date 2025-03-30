@@ -57,7 +57,7 @@
             <artifactId>javafx-maven-plugin</artifactId>
             <version>0.0.8</version>
             <configuration>
-                <mainClass>org.example.MainScrapper</mainClass>
+                <mainClass>org.scrapper.MainScrapper</mainClass>
             </configuration>
         </plugin>
         </plugins>
