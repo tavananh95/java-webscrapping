@@ -38,10 +38,12 @@ public class FeverScraper implements ScraperStrategy {
 
             String description = "";
 
-            // Element imgEl = eventElement.selectFirst("figure img");
-            // String imageUrl = imgEl != null ? imgEl.attr("src") : "N/A";
             String imageUrl = "https://upload.wikimedia.org/wikipedia/commons/a/a3/Image-not-found.png?20210521171500";
-            eventList.add(new EventItem(name, date, description, imageUrl));
+
+            Element linkEl = eventElement.selectFirst("a[data-testid=fv-plan-card]");
+            String link = linkEl != null ? linkEl.absUrl("href") : "";
+
+            eventList.add(new EventItem(name, date, description, imageUrl, link));
         }
 
         return eventList;

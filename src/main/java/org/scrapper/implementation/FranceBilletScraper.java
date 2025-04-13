@@ -34,7 +34,12 @@ public class FranceBilletScraper implements ScraperStrategy {
             String description = productGroup.selectFirst("div.listing-description span") != null ? productGroup.selectFirst("div.listing-description span").text() : "N/A";
             String imageUrl = productGroup.selectFirst("div.listing-image-wrapper img") != null ? productGroup.selectFirst("div.listing-image-wrapper img").attr("data-src") : "N/A";
 
-            eventList.add(new EventItem(name, date, description, imageUrl));
+            Element linkElement = productGroup.selectFirst("a[href^=/event/]");
+            String link = linkElement != null
+                    ? "https://www.francebillet.com" + linkElement.attr("href")
+                    : "";
+
+            eventList.add(new EventItem(name, date, description, imageUrl, link));
         }
         return eventList;
     }

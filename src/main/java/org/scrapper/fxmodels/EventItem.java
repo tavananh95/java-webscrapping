@@ -5,12 +5,14 @@ public class EventItem {
     private final String eventDate;
     private final String eventDescription;
     private final String eventImageUrl;
+    private final String eventLink;
 
-    public EventItem(String eventName, String eventDate, String eventDescription, String eventImageUrl) {
+    public EventItem(String eventName, String eventDate, String eventDescription, String eventImageUrl, String eventLink) {
         this.eventName = eventName;
         this.eventDate = eventDate;
         this.eventDescription = eventDescription;
         this.eventImageUrl = eventImageUrl;
+        this.eventLink = eventLink;
     }
 
     public String getEventName() {
@@ -28,4 +30,6 @@ public class EventItem {
     public String getEventImageUrl() {
         return eventImageUrl;
     }
+
+    public String getEventLink() { return eventLink; }
 }

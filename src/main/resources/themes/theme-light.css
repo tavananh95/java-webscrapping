@@ -1,0 +1,34 @@
+.root {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333;
+}
+
+.label {
+    -fx-text-fill: #222222;
+}
+
+.combo-box, .button, .list-view {
+    -fx-background-color: #f4f4f4;
+    -fx-text-fill: #333333;
+    -fx-border-color: #cccccc;
+}
+
+.button {
+    -fx-background-color: #e0e0e0;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.list-cell {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333;
+    -fx-border-color: #dddddd;
+}
+
+.list-cell:selected {
+    -fx-background-color: #d0e6ff;
+}
+
+.image-view {
+    -fx-effect: dropshadow(gaussian, lightgray, 5, 0.5, 0, 0);
+}

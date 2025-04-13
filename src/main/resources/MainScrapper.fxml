@@ -4,25 +4,47 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="org.scrapper.MainScrapper"
-      spacing="20" style="-fx-padding: 20;">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.scrapper.MainScrapper"
+            style="-fx-padding: 20;">
 
-    <!-- Left Section: User Inputs -->
-    <VBox spacing="10">
-        <Label text="Villes:"/>
-        <ComboBox fx:id="comboVilles"/>
+    <!-- Centre : ta structure HBox actuelle -->
+    <center>
+        <HBox spacing="20">
+            <!-- Partie gauche : filtres -->
+            <VBox spacing="10">
+                <Label text="Villes:"/>
+                <ComboBox fx:id="comboVilles"/>
 
-        <Label text="Evènements:"/>
-        <ComboBox fx:id="comboEvents"/>
+                <Label text="Evènements:"/>
+                <ComboBox fx:id="comboEvents"/>
 
-        <Button text="Start Scraping" onAction="#handleScrape"/>
-    </VBox>
+                <Button text="Commencer Scraping" onAction="#handleScrape"/>
+                <Button fx:id="exportButton" text="Exporter résultats" onAction="#handleExport"/>
+            </VBox>
 
-    <!-- Right Section: Event List -->
-    <ListView fx:id="eventListView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
-        <items>
-            <FXCollections fx:factory="observableArrayList"/>
-        </items>
-    </ListView>
+            <!-- Partie droite : ListView -->
+            <ListView fx:id="eventListView" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+                <items>
+                    <FXCollections fx:factory="observableArrayList"/>
+                </items>
+            </ListView>
 
-</HBox>
+        </HBox>
+    </center>
+
+    <!-- Bas : sélecteur de thème aligné à gauche -->
+    <bottom>
+        <VBox spacing="10" fx:id="pluginContainer">
+            <HBox alignment="BOTTOM_LEFT" spacing="10" style="-fx-padding: 10 0 0 0;">
+                <Label text="Thème :"/>
+                <ComboBox fx:id="themeSelector" onAction="#handleThemeChange"/>
+            </HBox>
+
+            <HBox alignment="BOTTOM_LEFT" spacing="10">
+                <Button fx:id="downloadPluginButton" text="📦 Télécharger Plugin" onAction="#handleDownloadPlugin"/>
+            </HBox>
+        </VBox>
+    </bottom>
+
+
+</BorderPane>

@@ -1,0 +1,35 @@
+.root {
+    -fx-background-color: #f0f8ff; /* AliceBlue */
+    -fx-text-fill: #003366;
+}
+
+.label {
+    -fx-text-fill: #003366;
+}
+
+.combo-box, .button, .list-view {
+    -fx-background-color: #d0e7ff;
+    -fx-text-fill: #003366;
+    -fx-border-color: #8cb6e1;
+}
+
+.button {
+    -fx-background-color: #007acc;
+    -fx-text-fill: #ffffff;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.list-cell {
+    -fx-background-color: #eaf4ff;
+    -fx-text-fill: #003366;
+    -fx-border-color: #c4dffb;
+}
+
+.list-cell:selected {
+    -fx-background-color: #bcd9f7;
+}
+
+.image-view {
+    -fx-effect: dropshadow(gaussian, lightblue, 5, 0.5, 0, 0);
+}
