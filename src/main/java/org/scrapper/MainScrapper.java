@@ -19,9 +19,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.scrapper.fxmodels.EventItem;
 import org.scrapper.interfaces.ScraperStrategy;
-import org.scrapper.plugins.Plugin;
 import org.scrapper.utils.PluginLoader;
 import org.scrapper.utils.ScrapperLinkUtils;
+import plugins.Plugin;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,8 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class MainScrapper extends Application {
 
@@ -52,20 +51,28 @@ public class MainScrapper extends Application {
 
     private List<Plugin> loadedPlugins = new ArrayList<>();
 
+    public void setCurrentScene(Scene scene) {
+        this.currentScene = scene;
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/MainScrapper.fxml"));
         Parent root = loader.load();
 
-        currentScene = new Scene(root);
+        Scene scene = new Scene(root);
+
+        MainScrapper controller = loader.getController();
+        controller.setCurrentScene(scene);
+
         primaryStage.setTitle("Event Scraper");
-        primaryStage.setScene(currentScene);
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
     @FXML
     public void initialize() {
-        themeSelector.setItems(FXCollections.observableArrayList("Clair", "Sombre", "Bleu"));
+        themeSelector.setItems(FXCollections.observableArrayList("Clair","Bleu"));
         themeSelector.getSelectionModel().selectFirst();
 
         comboVilles.setItems(FXCollections.observableArrayList("Paris", "Lyon", "Marseille"));
@@ -222,14 +229,11 @@ public class MainScrapper extends Application {
         scene.getStylesheets().clear();
 
         switch (selected) {
-            case "sombre":
-                scene.getStylesheets().add(getClass().getResource("/themes/theme-dark.css").toExternalForm());
-                break;
             case "bleu":
-                scene.getStylesheets().add(getClass().getResource("/themes/theme-blue.css").toExternalForm());
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/themes/theme-blue.css")).toExternalForm());
                 break;
             default:
-                scene.getStylesheets().add(getClass().getResource("/themes/theme-light.css").toExternalForm());
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/themes/theme-light.css")).toExternalForm());
         }
     }
 
@@ -241,30 +245,48 @@ public class MainScrapper extends Application {
         File selectedFile = fileChooser.showOpenDialog(null);
 
         if (selectedFile != null) {
-            Path source = selectedFile.toPath();
-            Path target = Paths.get("plugins", selectedFile.getName());
+            String originalName = selectedFile.getName().replace(".jar", "");
+            String timestampedName = originalName + "-" + System.currentTimeMillis() + ".jar";
+            Path target = Paths.get("plugins", timestampedName);
 
             try {
                 Files.createDirectories(target.getParent());
-                Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-                showAlert("Plugin copié", "Le plugin a été copié avec succès.");
+                Files.copy(selectedFile.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
+                showAlert("Plugin copié", "Le plugin a été copié avec succès :\n" + target.getFileName());
+
+                // Recharge les plugins avec le nouveau fichier
                 loadPluginsDynamically();
+
             } catch (IOException e) {
-                showAlert("Erreur", "Échec de la copie du plugin : " + e.getMessage());
+                showAlert("Erreur", "Échec de la copie du plugin :\n" + e.getMessage());
             }
         }
     }
+
 
     public void loadPluginsDynamically() {
         loadedPlugins.clear();
         pluginContainer.getChildren().clear();
 
         List<Plugin> plugins = PluginLoader.loadPlugins("plugins");
+        System.out.println("Plugins trouvés : " + plugins.size());
+
+        // Filtrage des doublons : on ne garde qu’un plugin par nom
+        Set<String> pluginNames = new HashSet<>();
+
         for (Plugin plugin : plugins) {
+            String name = plugin.getName();
+
+            if (pluginNames.contains(name)) {
+                System.out.println("Doublon ignoré : " + name);
+                continue;
+            }
+
+            pluginNames.add(name);
             loadedPlugins.add(plugin);
 
-            Button activate = new Button("Activer : " + plugin.getName());
-            Button deactivate = new Button("Désactiver : " + plugin.getName());
+            Button activate = new Button("Activer : " + name);
+            Button deactivate = new Button("Désactiver : " + name);
 
             activate.setOnAction(e -> plugin.onLoad(currentScene));
             deactivate.setOnAction(e -> plugin.onUnload(currentScene));
@@ -272,12 +294,13 @@ public class MainScrapper extends Application {
             pluginContainer.getChildren().addAll(activate, deactivate);
         }
 
-        if (plugins.isEmpty()) {
+        if (pluginNames.isEmpty()) {
             showAlert("Plugins", "Aucun plugin chargé.");
         } else {
-            System.out.println("✅ Plugins chargés : " + plugins.size());
+            System.out.println("Plugins affichés : " + pluginNames.size());
         }
     }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

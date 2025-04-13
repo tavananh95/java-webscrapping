@@ -1,34 +1,43 @@
 .root {
-    -fx-background-color: #ffffff;
-    -fx-text-fill: #333333;
+    -fx-background-color: #fdf6ec; /* beige pastel */
+    -fx-text-fill: #2e2e2e;
+    -fx-font-size: 13px;
 }
 
 .label {
-    -fx-text-fill: #222222;
+    -fx-text-fill: #4a4a4a;
 }
 
 .combo-box, .button, .list-view {
-    -fx-background-color: #f4f4f4;
-    -fx-text-fill: #333333;
-    -fx-border-color: #cccccc;
+    -fx-background-color: #f7efe2;
+    -fx-text-fill: #3a3a3a;
+    -fx-border-color: #d6cbb5;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
 }
 
 .button {
-    -fx-background-color: #e0e0e0;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
+    -fx-background-color: #e4d8c4;
+    -fx-text-fill: #2e2e2e;
+    -fx-border-color: #c1b49a;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.button:hover {
+    -fx-background-color: #dbcdb6;
 }
 
 .list-cell {
-    -fx-background-color: #ffffff;
-    -fx-text-fill: #333333;
-    -fx-border-color: #dddddd;
+    -fx-background-color: #fffdf9;
+    -fx-text-fill: #3c3c3c;
+    -fx-border-color: #e2d8c4;
 }
 
 .list-cell:selected {
-    -fx-background-color: #d0e6ff;
+    -fx-background-color: #ffeac2;
 }
 
 .image-view {
-    -fx-effect: dropshadow(gaussian, lightgray, 5, 0.5, 0, 0);
+    -fx-effect: dropshadow(gaussian, #c9bfa9, 5, 0.5, 0, 0);
 }

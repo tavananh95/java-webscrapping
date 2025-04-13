@@ -1,7 +1,7 @@
 package org.scrapper.utils;
 
 
-import org.scrapper.plugins.Plugin;
+import plugins.Plugin;
 
 import java.io.File;
 import java.net.URL;

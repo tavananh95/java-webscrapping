@@ -7,7 +7,6 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.scrapper.MainScrapper"
             style="-fx-padding: 20;">
 
-    <!-- Centre : ta structure HBox actuelle -->
     <center>
         <HBox spacing="20">
             <!-- Partie gauche : filtres -->
@@ -34,15 +33,18 @@
 
     <!-- Bas : sélecteur de thème aligné à gauche -->
     <bottom>
-        <VBox spacing="10" fx:id="pluginContainer">
-            <HBox alignment="BOTTOM_LEFT" spacing="10" style="-fx-padding: 10 0 0 0;">
+        <VBox spacing="10">
+            <!-- Zone fixe -->
+            <HBox spacing="10" alignment="BOTTOM_LEFT">
                 <Label text="Thème :"/>
                 <ComboBox fx:id="themeSelector" onAction="#handleThemeChange"/>
             </HBox>
-
-            <HBox alignment="BOTTOM_LEFT" spacing="10">
-                <Button fx:id="downloadPluginButton" text="📦 Télécharger Plugin" onAction="#handleDownloadPlugin"/>
+            <HBox spacing="10" alignment="BOTTOM_LEFT">
+                <Button fx:id="downloadPluginButton" text="Télécharger Plugin" onAction="#handleDownloadPlugin"/>
             </HBox>
+
+            <!-- Zone dynamique : plugins -->
+            <VBox fx:id="pluginContainer" spacing="5"/>
         </VBox>
     </bottom>
 

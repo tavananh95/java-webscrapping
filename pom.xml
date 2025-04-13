@@ -59,6 +59,13 @@
             <artifactId>commons-collections4</artifactId>
             <version>4.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>plugin-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>
