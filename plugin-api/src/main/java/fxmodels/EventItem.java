@@ -1,4 +1,4 @@
-package org.scrapper.fxmodels;
+package fxmodels;
 
 public class EventItem {
     private final String eventName;
@@ -32,4 +32,13 @@ public class EventItem {
     }
 
     public String getEventLink() { return eventLink; }
+
+    public String toFormattedString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Nom de l'événement : ").append(eventName).append("\n");
+        sb.append("Date : ").append(eventDate).append("\n\n");
+        sb.append("Description : ").append(eventDescription).append("\n\n");
+        sb.append("Lien : ").append(eventLink);
+        return sb.toString();
+    }
 }

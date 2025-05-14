@@ -1,7 +1,7 @@
 package org.scrapper.interfaces;
 
 import javafx.collections.ObservableList;
-import org.scrapper.fxmodels.EventItem;
+import fxmodels.EventItem;
 
 import java.io.IOException;
 

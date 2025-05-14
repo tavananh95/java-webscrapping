@@ -13,5 +13,6 @@
         <module>plugin-api</module>
         <module>DarkThemePlugin</module>
         <module>event-scrapper-app</module>
+        <module>InviteNeighborsPlugin</module>
     </modules>
 </project>

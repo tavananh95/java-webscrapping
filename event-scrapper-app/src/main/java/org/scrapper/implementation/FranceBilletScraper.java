@@ -6,7 +6,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.scrapper.fxmodels.EventItem;
+import fxmodels.EventItem;
 import org.scrapper.interfaces.ScraperStrategy;
 
 import java.io.IOException;

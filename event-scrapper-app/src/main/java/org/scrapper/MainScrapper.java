@@ -1,9 +1,11 @@
 package org.scrapper;
 
+import fxmodels.EventItem;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -17,10 +19,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.scrapper.fxmodels.EventItem;
 import org.scrapper.interfaces.ScraperStrategy;
 import org.scrapper.utils.PluginLoader;
 import org.scrapper.utils.ScrapperLinkUtils;
+import plugins.EventActionPlugin;
 import plugins.Plugin;
 
 import java.io.File;
@@ -50,6 +52,8 @@ public class MainScrapper extends Application {
     private VBox pluginContainer;
 
     private List<Plugin> loadedPlugins = new ArrayList<>();
+    private List<EventActionPlugin> loadedEventActionPlugins = new ArrayList<>();
+
 
     public void setCurrentScene(Scene scene) {
         this.currentScene = scene;
@@ -99,28 +103,45 @@ public class MainScrapper extends Application {
             @Override
             protected void updateItem(EventItem item, boolean empty) {
                 super.updateItem(item, empty);
+
                 if (empty || item == null) {
                     setGraphic(null);
                 } else {
                     eventNameLabel.setText(item.getEventName());
                     eventDateLabel.setText("Date: " + item.getEventDate());
                     eventDescriptionLabel.setText(item.getEventDescription());
-
                     loadImage(item.getEventImageUrl());
 
-                    // Bouton "En savoir plus"
+                    // New button created for each item
+                    Button moreButton = new Button("En savoir plus");
+                    moreButton.setStyle("-fx-background-color: #337ab7; -fx-text-fill: white;");
                     moreButton.setOnAction(e -> {
-                        if (item.getEventLink() != null && !item.getEventLink().equals("N/A")) {
+                        String link = item.getEventLink();
+                        if (link != null && !link.equals("N/A")) {
                             try {
-                                java.awt.Desktop.getDesktop().browse(new java.net.URI(item.getEventLink()));
+                                java.awt.Desktop.getDesktop().browse(new java.net.URI(link));
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
                         }
                     });
-                    setGraphic(content);
+
+                    VBox buttons = new VBox(5);
+                    buttons.getChildren().add(moreButton);
+
+                    for (EventActionPlugin plugin : loadedEventActionPlugins) {
+                        Button pluginBtn = new Button(plugin.getActionLabel());
+                        pluginBtn.setOnAction(e -> plugin.onActionTriggered(item));
+                        buttons.getChildren().add(pluginBtn);
+                    }
+
+                    VBox fullContent = new VBox(10, eventNameLabel, eventDateLabel, eventDescriptionLabel, imageView, buttons);
+                    fullContent.setPadding(new Insets(5));
+                    setGraphic(fullContent);
                 }
             }
+
+
 
             private void loadImage(String imageUrl) {
                 if (imageUrl != null && !imageUrl.equals("N/A")) {
@@ -266,15 +287,14 @@ public class MainScrapper extends Application {
 
     public void loadPluginsDynamically() {
         loadedPlugins.clear();
+        loadedEventActionPlugins.clear();
         pluginContainer.getChildren().clear();
 
-        List<Plugin> plugins = PluginLoader.loadPlugins("plugins");
-        System.out.println("Plugins trouvés : " + plugins.size());
-
-        // Filtrage des doublons : on ne garde qu’un plugin par nom
+        // Chargement des plugins UI / thème
+        List<Plugin> uiPlugins = PluginLoader.loadPlugins("plugins", Plugin.class);
         Set<String> pluginNames = new HashSet<>();
 
-        for (Plugin plugin : plugins) {
+        for (Plugin plugin : uiPlugins) {
             String name = plugin.getName();
 
             if (pluginNames.contains(name)) {
@@ -294,7 +314,17 @@ public class MainScrapper extends Application {
             pluginContainer.getChildren().addAll(activate, deactivate);
         }
 
-        if (pluginNames.isEmpty()) {
+        // Chargement des plugins d’action sur événement
+        List<EventActionPlugin> eventPlugins =
+                PluginLoader.loadPlugins("plugins", EventActionPlugin.class);
+
+        loadedEventActionPlugins.addAll(eventPlugins);
+
+        if (!eventPlugins.isEmpty()) {
+            System.out.println("Plugins d’action trouvés : " + eventPlugins.size());
+        }
+
+        if (pluginNames.isEmpty() && eventPlugins.isEmpty()) {
             showAlert("Plugins", "Aucun plugin chargé.");
         } else {
             System.out.println("Plugins affichés : " + pluginNames.size());
