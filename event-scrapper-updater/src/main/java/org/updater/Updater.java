@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 public class Updater extends Application {
 
     private static final String LATEST_VERSION_URL = "https://raw.githubusercontent.com/tavananh95/java-webscrapping/main/latest-version.txt";
-    private static final String DOWNLOAD_URL = "https://github.com/tavananh95/java-webscrapping/releases/download/1.0-SNAPSHOT/event-scraper-app-v1.0-SNAPSHOT.jar";
+    private static final String DOWNLOAD_URL_TEMPLATE = "https://github.com/tavananh95/java-webscrapping/releases/download/{version}/event-scraper-app-{version}.jar";
     private static final String APP_JAR = "event-scraper-app.jar";
 
     @Override
@@ -44,7 +44,8 @@ public class Updater extends Application {
                         ButtonType.YES, ButtonType.NO);
                 alert.showAndWait().ifPresent(response -> {
                     if (response == ButtonType.YES) {
-                        downloadAndReplace();
+                        String downloadUrl = DOWNLOAD_URL_TEMPLATE.replace("{version}", latestVersion);
+                        downloadAndReplace(downloadUrl);
                         launchMainApp();
                     } else {
                         launchMainApp();
@@ -78,9 +79,8 @@ public class Updater extends Application {
         return currentVersion.equals(latestVersion);
     }
 
-
-    private void downloadAndReplace() {
-        try (InputStream in = new URL(DOWNLOAD_URL).openStream()) {
+    private void downloadAndReplace(String downloadUrl) {
+        try (InputStream in = new URL(downloadUrl).openStream()) {
             Files.copy(in, Paths.get(APP_JAR), StandardCopyOption.REPLACE_EXISTING);
             System.out.println("Updated to latest version.");
         } catch (IOException e) {
@@ -90,10 +90,14 @@ public class Updater extends Application {
         }
     }
 
-
     private void launchMainApp() {
         try {
-            ProcessBuilder pb = new ProcessBuilder("java", "-jar", APP_JAR);
+            ProcessBuilder pb = new ProcessBuilder(
+                    "java",
+                    "--module-path", "C:\\Users\\tavan\\javafx-sdk-17.0.15\\lib",
+                    "--add-modules", "javafx.controls,javafx.fxml",
+                    "-jar", APP_JAR
+            );
             pb.inheritIO();
             pb.start();
             System.exit(0);
