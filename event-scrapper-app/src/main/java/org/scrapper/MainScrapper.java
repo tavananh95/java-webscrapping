@@ -50,6 +50,9 @@ public class MainScrapper extends Application {
     private Scene currentScene;
     @FXML
     private VBox pluginContainer;
+    @FXML
+    private Label versionLabel;
+
 
     private List<Plugin> loadedPlugins = new ArrayList<>();
     private List<EventActionPlugin> loadedEventActionPlugins = new ArrayList<>();
@@ -69,7 +72,8 @@ public class MainScrapper extends Application {
         MainScrapper controller = loader.getController();
         controller.setCurrentScene(scene);
 
-        primaryStage.setTitle("Event Scraper");
+        String version = getAppVersion();
+        primaryStage.setTitle("Event Scraper version " + version);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -78,6 +82,8 @@ public class MainScrapper extends Application {
     public void initialize() {
         themeSelector.setItems(FXCollections.observableArrayList("Clair","Bleu"));
         themeSelector.getSelectionModel().selectFirst();
+
+        versionLabel.setText("Version: " + getAppVersion());
 
         comboVilles.setItems(FXCollections.observableArrayList("Paris", "Lyon", "Marseille"));
         comboVilles.getSelectionModel().selectFirst();
@@ -339,6 +345,16 @@ public class MainScrapper extends Application {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    public static String getAppVersion() {
+        Package pkg = MainScrapper.class.getPackage();
+        if (pkg != null && pkg.getImplementationVersion() != null) {
+            return pkg.getImplementationVersion();
+        } else {
+            return "dev";
+        }
+    }
+
 
 
     public static void main(String[] args) {

@@ -45,6 +45,10 @@
 
             <!-- Zone dynamique : plugins -->
             <VBox fx:id="pluginContainer" spacing="5"/>
+
+            <HBox spacing="10" alignment="BOTTOM_LEFT">
+                <Label fx:id="versionLabel" text="Version"/>
+            </HBox>
         </VBox>
     </bottom>
 

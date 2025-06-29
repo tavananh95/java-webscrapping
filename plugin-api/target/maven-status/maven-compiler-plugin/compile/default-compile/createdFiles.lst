@@ -1,1 +1,3 @@
 plugins\Plugin.class
+fxmodels\EventItem.class
+plugins\EventActionPlugin.class

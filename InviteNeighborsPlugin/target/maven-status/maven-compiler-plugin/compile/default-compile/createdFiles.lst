@@ -1,0 +1,4 @@
+plugins\services\EmailComposerWindow.class
+plugins\services\EmailService$1.class
+plugins\services\EmailService.class
+plugins\implementation\InviteNeighborsPlugin.class
