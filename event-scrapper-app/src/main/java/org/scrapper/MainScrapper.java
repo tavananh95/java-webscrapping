@@ -1,5 +1,6 @@
 package org.scrapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fxmodels.EventItem;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -25,9 +26,7 @@ import org.scrapper.utils.ScrapperLinkUtils;
 import plugins.EventActionPlugin;
 import plugins.Plugin;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,12 +45,15 @@ public class MainScrapper extends Application {
     private ListView<EventItem> eventListView;
     @FXML
     private Button exportButton;
-    @FXML private ComboBox<String> themeSelector;
+    @FXML
+    private ComboBox<String> themeSelector;
     private Scene currentScene;
     @FXML
     private VBox pluginContainer;
     @FXML
     private Label versionLabel;
+    @FXML
+    private TextArea finderzQueryInput;
 
 
     private List<Plugin> loadedPlugins = new ArrayList<>();
@@ -80,7 +82,7 @@ public class MainScrapper extends Application {
 
     @FXML
     public void initialize() {
-        themeSelector.setItems(FXCollections.observableArrayList("Clair","Bleu"));
+        themeSelector.setItems(FXCollections.observableArrayList("Clair", "Bleu"));
         themeSelector.getSelectionModel().selectFirst();
 
         versionLabel.setText("Version: " + getAppVersion());
@@ -146,7 +148,6 @@ public class MainScrapper extends Application {
                     setGraphic(fullContent);
                 }
             }
-
 
 
             private void loadImage(String imageUrl) {
@@ -354,6 +355,69 @@ public class MainScrapper extends Application {
             return "dev";
         }
     }
+
+    @FXML
+    private void handleRunFinderzQuery() {
+        String query = finderzQueryInput.getText();
+        if (query == null || query.isBlank()) {
+            showAlert("Input Error", "Please enter a Finderz query.");
+            return;
+        }
+
+        ObservableList<EventItem> items = eventListView.getItems();
+        if (items == null || items.isEmpty()) {
+            showAlert("Input Error", "No scraped events to process.");
+            return;
+        }
+
+        try {
+            // Convert list to JSON
+            ObjectMapper mapper = new ObjectMapper();
+            String eventsJson = mapper.writeValueAsString(items);
+
+            // Launch python process
+            ProcessBuilder pb = new ProcessBuilder(
+                    "python",
+                    "src/main/java/org/python/finderz.py"
+            );
+            pb.redirectErrorStream(true);
+            Process process = pb.start();
+
+            // Write query and data, then close writer
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), "UTF-8"))) {
+                writer.write(query.trim());
+                writer.newLine();
+                writer.write("---DATA---");
+                writer.newLine();
+                writer.write(eventsJson);
+                writer.newLine();
+                writer.flush();
+                // No need to call writer.close() explicitly here as try-with-resources does it
+            }
+
+            // Read output
+            StringBuilder output = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-8"))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    output.append(line).append(System.lineSeparator());
+                }
+            }
+
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                showAlert("Finderz Output", output.toString());
+            } else {
+                showAlert("Finderz Error", "Python script exited with code " + exitCode + "\n" + output);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Execution Error", "Failed to run Finderz script:\n" + e.getMessage());
+        }
+    }
+
+
 
 
 

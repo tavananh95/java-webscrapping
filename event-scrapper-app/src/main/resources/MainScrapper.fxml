@@ -43,6 +43,12 @@
                 <Button fx:id="downloadPluginButton" text="Télécharger Plugin" onAction="#handleDownloadPlugin"/>
             </HBox>
 
+            <VBox spacing="10">
+                <Label text="Finderz Query:"/>
+                <TextArea fx:id="finderzQueryInput" promptText="Paste your START ... END query here" prefRowCount="10"/>
+                <Button text="Run Finderz Query" onAction="#handleRunFinderzQuery"/>
+            </VBox>
+
             <!-- Zone dynamique : plugins -->
             <VBox fx:id="pluginContainer" spacing="5"/>
 
